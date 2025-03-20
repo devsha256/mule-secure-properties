@@ -1,0 +1,41 @@
+# Byte-compiled files
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+
+# Virtual Environment
+env/
+venv/
+.venv/
+
+# IDE specific files
+.vscode/
+*.code-workspace
+
+# PyInstaller
+*.spec
+dist/
+build/
+
+# Log and cache files
+*.log
+*.pot
+*.cache
+*.coverage
+.coverage.*
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Python egg files
+*.egg-info/
+.eggs/
+
+# Miscellaneous
+*.swp
+*.swo
+*.bak
+*.tmp
+
