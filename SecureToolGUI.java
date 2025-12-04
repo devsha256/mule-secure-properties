@@ -3,8 +3,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
@@ -14,9 +12,15 @@ import java.util.concurrent.ExecutionException;
 
 public class SecureToolGUI extends JFrame {
 
+    // --- CONFIGURATION CONSTANTS ---
+    // Change this value to set your hardcoded default key
+    private static final String DEFAULT_KEY = "YourSecretKeyHere"; 
+    private static final String DEFAULT_ALGORITHM = "Blowfish";
+    private static final String DEFAULT_MODE = "CBC";
+    // -------------------------------
+
     // Material Design Colors
     private static final Color PRIMARY_COLOR = new Color(33, 150, 243); // Material Blue
-    private static final Color PRIMARY_DARK = new Color(25, 118, 210);
     private static final Color BACKGROUND_COLOR = new Color(250, 250, 250);
     private static final Color TEXT_COLOR = new Color(33, 33, 33);
     private static final Color ERROR_COLOR = new Color(211, 47, 47);
@@ -64,16 +68,19 @@ public class SecureToolGUI extends JFrame {
 
         mainPanel.add(createLabel("Algorithm:"));
         algorithmCombo = createComboBox(new String[]{"AES", "Blowfish", "DES", "DESed", "RCA", "RC2"});
+        algorithmCombo.setSelectedItem(DEFAULT_ALGORITHM); // Set Default Algorithm
         mainPanel.add(algorithmCombo);
         mainPanel.add(Box.createVerticalStrut(10));
 
         mainPanel.add(createLabel("Mode:"));
         modeCombo = createComboBox(new String[]{"CBC", "CFB", "ECB", "OFB"});
+        modeCombo.setSelectedItem(DEFAULT_MODE); // Set Default Mode
         mainPanel.add(modeCombo);
         mainPanel.add(Box.createVerticalStrut(10));
 
         mainPanel.add(createLabel("Key:"));
         keyField = createTextField();
+        keyField.setText(DEFAULT_KEY); // Set Default Key
         mainPanel.add(keyField);
         mainPanel.add(Box.createVerticalStrut(10));
 
@@ -136,7 +143,7 @@ public class SecureToolGUI extends JFrame {
         statusLabel.setText("Processing...");
         resultArea.setText("");
 
-        // Run in background thread (Fixes UI freezing issue)
+        // Run in background thread
         SwingWorker<String, Void> worker = new SwingWorker<>() {
             @Override
             protected String doInBackground() throws Exception {
@@ -171,7 +178,6 @@ public class SecureToolGUI extends JFrame {
             // Robust path finding for the JAR
             String jarPath = "resources/secure-properties-tool.jar";
             if (!new File(jarPath).exists()) {
-                // Try looking in current dir if resources folder doesn't exist
                 if (new File("secure-properties-tool.jar").exists()) {
                     jarPath = "secure-properties-tool.jar";
                 } else {
@@ -192,7 +198,7 @@ public class SecureToolGUI extends JFrame {
             command.add(val);
 
             ProcessBuilder pb = new ProcessBuilder(command);
-            pb.redirectErrorStream(true); // Merge stderr into stdout
+            pb.redirectErrorStream(true);
             Process process = pb.start();
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -300,7 +306,6 @@ public class SecureToolGUI extends JFrame {
     }
 
     public static void main(String[] args) {
-        // Apply System Look and Feel for better OS integration
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ignored) {}
